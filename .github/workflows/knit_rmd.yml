@@ -33,6 +33,7 @@ jobs:
           R -e 'install.packages("purrr")'
           R -e 'install.packages("lubridate")'
           R -e 'install.packages("janitor")'
+          R -e 'install.packages("rmarkdown")'
           R -e 'install.packages("knitr")'
 
       # Runs an R script
