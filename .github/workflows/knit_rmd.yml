@@ -30,7 +30,7 @@ jobs:
       - name: Install packages
         run: |
           R -e 'install.packages("here")'
-          R -e 'install.packages("reader")'
+          R -e 'install.packages("readr")'
           R -e 'install.packages("purrr")'
           R -e 'install.packages("lubridate")'
           R -e 'install.packages("janitor")'
