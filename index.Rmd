@@ -35,7 +35,8 @@ This document provides plots of data reported on the Immigration and Customs Enf
 ```{r Load Libraries}
 # Load Libraries
 library(readr)
-library(tidyverse)
+library(purrr)
+# library(tidyverse)
 library(lubridate)
 library(ggplot2)
 library(plotly)
