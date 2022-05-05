@@ -38,7 +38,7 @@ jobs:
 
       # Runs an R script
       - name: Run Script
-        run: Rscript -e 'rmarkdown::render("/docs/index.Rmd")'
+        run: Rscript -e 'rmarkdown::render("docs/index.Rmd")'
       
       # Authenticate and commit
       - name: Setup git config 
