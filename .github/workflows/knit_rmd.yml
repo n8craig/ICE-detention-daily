@@ -30,9 +30,12 @@ jobs:
       - name: Install packages
         run: |
           R -e 'install.packages("here")'
+          R -e 'install.packages("reader")'
           R -e 'install.packages("purrr")'
           R -e 'install.packages("lubridate")'
           R -e 'install.packages("janitor")'
+          R -e 'install.packages("ggplot2")'
+          R -e 'install.packages("plotly")'
           R -e 'install.packages("rmarkdown")'
           R -e 'install.packages("knitr")'
           R -e 'install.packages("bookdown")'
