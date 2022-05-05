@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: automate-random-number
+name: knit-rmd
 
 # Controls when the workflow will run
 on:
@@ -29,10 +29,14 @@ jobs:
       - name: Install packages
         run: |
           R -e 'install.packages("here")'
+          R -e 'install.packages("tidyverse")'
+          R -e 'install.packages("lubridate")'
+          R -e 'install.packages("janitor")'
+          R -e 'install.packages("knitr")'
 
       # Runs an R script
       - name: Run Script
-        run: Rscript my_number.R
+        run: Rscript index_knit.R
       
       # Authenticate and commit
       - name: Setup git config 
