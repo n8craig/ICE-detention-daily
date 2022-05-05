@@ -1,0 +1,51 @@
+# This is a basic workflow to help you get started with Actions
+
+name: automate-random-number
+
+# Controls when the workflow will run
+on:
+  # Schedules the workflow on cron
+  schedule:
+    - cron: '*/15 * * * *'
+
+  # Allows you to run this workflow manually from the Actions tab.
+  # Uncomment for testing, comment to run cron.
+  # workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - uses: r-lib/actions/setup-r@master
+      
+      # Setup R
+      - name: Install packages
+        run: |
+          R -e 'install.packages("here")'
+
+      # Runs an R script
+      - name: Run Script
+        run: Rscript my_number.R
+      
+      # Authenticate and commit
+      - name: Setup git config 
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+          
+      - name: commit
+        env:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git add data/*
+          git commit -m "GH ACTION Headlines $(date)"
+          git push origin main
+# Complete Job
+
