@@ -22,9 +22,9 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: docker://pandoc/core
       - uses: actions/checkout@v2
       - uses: r-lib/actions/setup-r@master
+      - uses: r-lib/actions/setup-pandoc@v1
       
       # Setup R
       - name: Install packages
@@ -38,7 +38,7 @@ jobs:
 
       # Runs an R script
       - name: Run Script
-        run: Rscript index_knit.R
+        run: Rscript -e 'rmarkdown::render(here::here("/docs/index.Rmd"))
       
       # Authenticate and commit
       - name: Setup git config 
