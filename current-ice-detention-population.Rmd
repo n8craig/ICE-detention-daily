@@ -1,0 +1,172 @@
+---
+title: "Current ICE Detention Population"
+description: |
+  Daily updated information on ICE detention population and COVID-19 levels.
+author:
+  - name: Nathan Craig
+    url: https://ncraig.netlify.app/
+date: 2021-06-30
+categories:
+  - immigration
+output:
+  bookdown::html_document2:
+    self_contained: false
+    # pandoc_args: ["--number-sections"]
+    # df_print: paged
+    toc: true
+    number_sections: true
+link-citations: yes
+repository_url: https://github.com/n8craig/ICE-detention-daily
+creative_commons: CC BY-NC
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
+```
+
+Page last updated: `r format(Sys.time(), "%A %B %d, %Y at %I:%M:%S %p")`
+
+# Introduction
+
+This document provides plots of data reported on the Immigration and Customs Enforcement [Guidance on COVID-19](https://www.ice.gov/coronavirus) website. On Friday March 13, 2020 ICE suspended family and social visitation. On March 27, 2020 ICE [established](https://web.archive.org/web/20200327175825/https://www.ice.gov/coronavirus) the Guidance on COVID-19 web page and indicated the site would be updated frequently. Shortly afterwards I began logging the data on a daily basis, occasionally relying on the Internet Archive's Wayback Machine's [regular scrapes](https://web.archive.org/web/20200401000000*/https://www.ice.gov/coronavirus) of the page to pick up days that I missed. Results of those scrapes are contained in a [github](https://github.com/n8craig/ICE-COVID-19) repository and key data including the total detained population (Figure \@ref(fig:ICE-Detention-Population)), number of active COVID-19 cases in detention (Figure \@ref(fig:Total-Confirmed-COVID-19)), cumulative COVID-19 cases (Figure \@ref(fig:Cumulative-COVID-19)), and total number of COVID-19 tests (Figure \@ref(fig:Total-COVID-19-Tests)).
+
+```{r Load Libraries}
+# Load Libraries
+library(readr)
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(plotly)
+library(janitor)
+library(knitr)
+
+options(digits=3)
+opts_chunk$set(comment = NA,
+               prompt = FALSE,
+               cache = FALSE)
+
+# Turn off scientific notation
+options(digits=5, scipen=15)
+```
+
+```{r load-dataset}
+# Load Dataset
+df_summary <- read_csv("https://raw.githubusercontent.com/n8craig/ICE-COVID-19/main/data/covid_summaries.csv", 
+    col_types = cols(Date = col_date(format = "%Y-%m-%d"), 
+        `Total Deaths` = col_double(), `Total COVID-19 Confirmed in Custody` = col_double())) %>% 
+  clean_names()
+```
+
+# Current Total Detained Population
+
+```{r}
+b_inaug <- df_summary %>% 
+  filter(date == "2021-01-20") %>% 
+  pluck("total_detained")
+
+lowest <- df_summary %>% 
+  filter(date == "2021-03-09") %>% 
+  pluck("total_detained")
+
+yesterday <- df_summary %>% 
+  filter(date == Sys.Date()-1) %>% 
+  pluck("total_detained")
+
+difference <- yesterday-lowest
+
+detention_change <- yesterday - lowest
+
+percent_change <- round((difference/lowest)*100,0)
+
+```
+
+When President Biden took office, the detained population was `r b_inaug`. The lowest detention population was `r lowest` which was reported by ICE between March 9-15, 2021. This was just under three months into the Biden administration. However, by March 16 the detained population began rising again. As of `r format(Sys.Date(), "%B %e, %Y")`, the detained population is `r yesterday` which represents an increase of `r detention_change` detained individuals from the lowest point and a `r percent_change`% change from that value.
+
+```{r ICE-Detention-Population, fig.cap="ICE detention population plotted over time. Data source: https://www.ice.gov/coronavirus"}
+
+# ICE Detention Population Over Time
+p <- ggplot(df_summary, aes(x=date, y=total_detained))+
+  geom_line()+
+  geom_point()+
+  geom_smooth()+
+  labs(
+    title = paste("ICE Detention Population as of", Sys.Date()),
+    x = "Date",
+    y = "Total Detained"
+  )
+ggplotly(p)
+
+```
+
+Note if a static file is desired, see Appendix A.
+
+# Active COVID-19 Cases in ICE Detention
+
+On March 31, 2021 was the lowest number of active COVID-19 cases in ICE detention at 332. By early April 2021, as detention numbers started to rise, the number of active COVID-19 cases in detention shot up quickly. On May 21, 2021 at 2123 active cases was the highest level since the start of the pandemic. While active cases began to fall by May 25, Figure \@ref(fig:Total-Confirmed-COVID-19) shows that the number of active cases remains more than double its lowest point.
+
+```{r Total-Confirmed-COVID-19, layout="l-body-outset", fig.cap="Total number of active COVID-19 cases plotted over time. Data source: https://www.ice.gov/coronavirus"}
+# Total Confirmed COVID-19 Over Time
+p <- ggplot(df_summary, aes(x=date, y=total_covid_19_confirmed_in_custody))+
+  geom_line()+
+  geom_smooth()+
+   labs(
+    title = "Total Number of Confirmed COVID-19 Cases in ICE Detention",
+    x = "Date",
+    y = "Total COVID-19 Confirmed in Custody"
+  )
+ggplotly(p)
+
+```
+
+\# Cumulative COVID-19 Cases in ICE Detention
+
+Figure \@ref(fig:Cumulative-COVID-19) shows the number of cumulative cases in ICE detention continues to grow at a steady rate. The rate of increase dipped slightly around March but quickly shot up in April and remains growing rapidly.
+
+```{r Cumulative-COVID-19, layout="l-body-outset", fig.cap="Cumulative COVID-19 cases in ICE detention plotted over time. Data source: https://www.ice.gov/coronavirus"}
+# Cumulative COVID-19
+ggplot(df_summary, aes(x=date, y=total_cumulative_covid_19))+
+  geom_line()+
+  geom_smooth()+
+   labs(
+    title = "Cumulative COVID-19 Cases in ICE Detention",
+    x = "Date",
+    y = "Total Cumulative COVID-19"
+  )
+
+```
+
+# Total Number of COVID-19 tests in ICE detention
+
+Figure \@ref(fig:Total-COVID-19-Tests) indicates that there is no appreciable increase in the rate of tests after January 20, 2021 when Biden was inaugurated. Based on data reported by ICE, the Biden administration does not appear to have accelerated the rate of COVID-19 testing in ICE detention.
+
+```{r Total-COVID-19-Tests, layout="l-body-outset", fig.cap="Cumulative number of COVID-19 tests plotted over time. Data source: https://www.ice.gov/coronavirus"}
+# Total COVID-19 Tests
+ggplot(df_summary, aes(x=date, y=total_tested))+
+  geom_line()+
+  geom_smooth()+
+   labs(
+    title = "Total Number of COVID-19 Tests in ICE Detention Population \nOver Time",
+    x = "Date",
+    y = "Total Tested"
+  )
+
+```
+
+# Appendix A: Static plot of total detained population {#appendix-a .unnumbered}
+
+```{r ICE-Detention-Population-Static, preview = TRUE}
+
+# ICE Detention Population Over Time
+ggplot(df_summary, aes(x=date, y=total_detained))+
+  geom_line()+
+  geom_point()+
+  geom_smooth()+
+  labs(
+    title = paste("ICE Detention Population as of", Sys.Date()),
+    caption = "Source: https://www.ice.gov/coronavirus",
+    x = "Date",
+    y = "Total Detained"
+  )
+```
