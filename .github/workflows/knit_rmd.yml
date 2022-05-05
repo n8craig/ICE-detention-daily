@@ -35,6 +35,7 @@ jobs:
           R -e 'install.packages("janitor")'
           R -e 'install.packages("rmarkdown")'
           R -e 'install.packages("knitr")'
+          R -e 'install.packages("bookdown")'
 
       # Runs an R script
       - name: Run Script
