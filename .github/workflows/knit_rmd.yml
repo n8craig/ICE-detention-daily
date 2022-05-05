@@ -48,7 +48,7 @@ jobs:
         env:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git add data/*
+          git add docs/*
           git commit -m "GH ACTION Headlines $(date)"
           git push origin main
 # Complete Job
