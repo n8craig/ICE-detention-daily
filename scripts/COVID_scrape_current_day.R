@@ -1,4 +1,5 @@
 # Load Libraries
+library(here)
 library(rvest)
 library(dplyr)
 library(stringr)
@@ -80,7 +81,7 @@ covid_summary_totals
 
 # Write summary values to file
 write_csv(covid_summary_totals,
-          here::here("data/covid_summaries.csv"),
+          here("data/covid_summaries.csv"),
           append = TRUE,
           col_names = FALSE)
 
@@ -99,6 +100,6 @@ confirmed_cases
 
 # Write out data by facility
 write_csv(confirmed_cases,
-          here::here("data/covid_by_facility.csv"),
+          here("data/covid_by_facility.csv"),
           append = TRUE,
           col_names = FALSE)
