@@ -6,7 +6,7 @@ name: knit-rmd
 on:
   # Schedules the workflow on cron
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/45 * * * *'
 
   # Allows you to run this workflow manually from the Actions tab.
   # Uncomment for testing, comment to run cron.
@@ -27,18 +27,11 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v1
       
       # Setup R
-      - name: Install packages
+      - name: Setup dependencies
         run: |
-          R -e 'install.packages("here")'
-          R -e 'install.packages("readr")'
-          R -e 'install.packages("purrr")'
-          R -e 'install.packages("lubridate")'
-          R -e 'install.packages("janitor")'
-          R -e 'install.packages("ggplot2")'
-          R -e 'install.packages("plotly")'
-          R -e 'install.packages("rmarkdown")'
-          R -e 'install.packages("knitr")'
-          R -e 'install.packages("bookdown")'
+          R -e 'install.packages("renv")'
+          R -e 'renv::restore()'
+
 
       # Runs an R script
       - name: Run Script
