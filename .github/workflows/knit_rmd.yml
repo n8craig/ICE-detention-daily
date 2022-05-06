@@ -26,6 +26,10 @@ jobs:
       - uses: r-lib/actions/setup-r@master
       - uses: r-lib/actions/setup-pandoc@v1
       
+
+      - name: Install cURL Headers
+        run: sudo apt-get install libcurl4-openssl-dev
+      
       # Setup R
       - name: Setup dependencies
         run: |
