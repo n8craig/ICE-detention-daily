@@ -54,7 +54,7 @@ options(digits=5, scipen=15)
 
 ```{r load-dataset}
 # Load Dataset
-df_summary <- read_csv("https://raw.githubusercontent.com/n8craig/ICE-COVID-19/main/data/covid_summaries.csv", 
+df_summary <- read_csv(here::here("data/covid_summaries.csv"), 
     col_types = cols(Date = col_date(format = "%Y-%m-%d"), 
         `Total Deaths` = col_double(), `Total COVID-19 Confirmed in Custody` = col_double())) %>% 
   clean_names()

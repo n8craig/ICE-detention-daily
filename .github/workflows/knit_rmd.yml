@@ -37,8 +37,12 @@ jobs:
           R -e 'renv::restore()'
 
 
-      # Runs an R script
-      - name: Run Script
+      # Run Scraper R Script
+      - name: Scrape Data
+        run: Rscript -e 'here::here("scripts/COVID_scrape_current_day.R")'
+
+      # Knits R Markdown
+      - name: Knit Report
         run: Rscript -e 'rmarkdown::render("docs/index.Rmd")'
       
       # Authenticate and commit
